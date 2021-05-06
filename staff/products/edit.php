@@ -31,20 +31,33 @@
                             <div class="col-lg-6">
                                     <select class="custom-select" id="edit-val-warehouse" name="edit-val-warehouse">
                                         <option selected></option>
-                                        <option value="1">Us Warehouse</option>
+                                        <option value="us-warehouse" >Us Warehouse</option>
+                                        <option value="ph-warehouse" >Ph Warehouse</option>
                                     </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                        <input type="hidden" class="form-control" id="val-customer_id" name="edit-val-customer_id" value="<?=$customerId?>" >
-                        <input type="hidden" class="form-control" id="edit-val-pid" name="edit-val-pid" >
-                            <label class="col-lg-4 col-form-label" for="edit-val-service_type">Service type<span class="text-danger">*</span>
+                        <input type="hidden" class="form-control" id="edit-val-pid" name="edit-val-pid" value="" >
+                        <input type="hidden" class="form-control" id="edit-val-customer_id" name="edit-val-customer_id" value="<?=$customerId?>" >
+                            <label class="col-lg-4 col-form-label" for="val-service_type">Service type<span class="text-danger">*</span>
                             </label>
                             <div class="col-lg-6">
                                     <select class="custom-select" id="edit-val-service_type" name="edit-val-service_type">
-                                        <option selected></option>
-                                        <option value="1">Pesonal shopper</option>
-                                        <option value="2">Consolidation</option>
+                                    <option value="personal-shopper">Personal Shopper</option>
+                                        <option value="consolidation">Consolidation</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label" for="edit-val-package_type">Package type<span class="text-danger">*</span>
+                            </label>
+                            <div class="col-lg-6">
+                                    <select class="custom-select" id="edit-val-package_type" name="edit-val-package_type">
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="electronics">Electronics</option>
+                                        <option value="fragile-items">Fragile Items</option>
+                                        <option value="automotive-parts">Automotive Parts</option>
+                                        <option value="irregular-sized-packages">Irregular-Sized Packages</option>
                                     </select>
                             </div>
                         </div>

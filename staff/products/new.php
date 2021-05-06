@@ -32,8 +32,9 @@
                             </label>
                             <div class="col-lg-6">
                                     <select class="custom-select" id="val-warehouse" name="val-warehouse">
-                                        <option selected></option>
-                                        <option value="1">Us Warehouse</option>
+                                    <option selected></option>
+                                        <option value="us-warehouse" >Us Warehouse</option>
+                                        <option value="ph-warehouse" >PH Warehouse</option>
                                     </select>
                             </div>
                         </div>
@@ -43,8 +44,21 @@
                             </label>
                             <div class="col-lg-6">
                                     <select class="custom-select" id="val-service_type" name="val-service_type">
-                                        <option selected></option>
-                                        <option value="1">Consolidation</option>
+                                        <option value="personal-shopper">Personal Shopper</option>
+                                        <option value="consolidation">Consolidation</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label" for="val-package_type">Package type<span class="text-danger">*</span>
+                            </label>
+                            <div class="col-lg-6">
+                                    <select class="custom-select" id="val-package_type" name="val-package_type">
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="electronics">Electronics</option>
+                                        <option value="fragile-items">Fragile Items</option>
+                                        <option value="automotive-parts">Automotive Parts</option>
+                                        <option value="irregular-sized-packages">Irregular-Sized Packages</option>
                                     </select>
                             </div>
                         </div>

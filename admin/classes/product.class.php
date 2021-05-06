@@ -3,11 +3,14 @@
 class Product extends DatabaseObject {
 
     static protected $table_name = "products";
+    //insert to table
     static protected $db_columns = ['warehouse_id', 'customer_id', 'service_type','merchant_info','weight','lenght','width','height','qty','value','package_type','description','status','imagesList','hidden','viewed'];
-
+    //view product
     public $product_table = ['Image','Desicription','Dimention HxWxL (cm)','Weight(kg)','Value','Qty','Modify'];
+    //add product to rest api
+    public $product_table_api = ['warehouse_id', 'customer_id', 'service_type','merchant_info','weight','lenght','width','height','qty','value','package_type','description','status','imagesList'];
     
-    public $product_table_test = ['Desicription','Dimention HxWxL (cm)','Weight(kg)','Value','Qty'];
+
 
     public $id;
     public $warehouse_id ;
@@ -27,8 +30,6 @@ class Product extends DatabaseObject {
     public $imagesList;
     public $viewed;
 
-
-
     public function __construct($args=[]) {
          $this->id = $args['id'] ?? '';
          $this->warehouse_id = $args['warehouse_id'] ?? '';
@@ -41,7 +42,7 @@ class Product extends DatabaseObject {
          $this->height = $args['height'] ?? '';
          $this->qty = $args['quantity'] ?? '';
          $this->value = $args['value'] ?? '';
-         $this->package_type = $args['package_type'] ?? 'Personal Shopper';
+         $this->package_type = $args['package_type'] ?? '';
          $this->description = $args['description'] ?? '';
          $this->hidden = $args['hidden'] ?? '0';
          $this->imagesList = $args['imagesList'] ?? '';
@@ -89,14 +90,14 @@ class Product extends DatabaseObject {
       }
 
        public function updateProduct($id){
-        $sql ="UPDATE " . static::$table_name . " SET warehouse_id = ".$this->warehouse_id." ,service_type = '".$this->service_type."'";
+        $sql ="UPDATE " . static::$table_name . " SET warehouse_id = '".$this->warehouse_id."' ,service_type = '".$this->service_type."'";
         $sql .=" , merchant_info = '".$this->merchant_info."' ,weight = ".$this->weight."  ,lenght = ".$this->lenght." ,width = ".$this->width."";
-        $sql .=" ,height = ".$this->height." ,qty = ".$this->qty." ,value = ".$this->value." ,status = ".$this->status." ,description = '".$this->description."'";
+        $sql .=" ,height = ".$this->height." ,qty = ".$this->qty." ,value = ".$this->value." ,package_type = '".$this->package_type."' ,status = ".$this->status." ,description = '".$this->description."'";
               if(!empty($this->imagesList)){ $sql .= "  ,imagesList = '".$this->imagesList."'"; }
         $sql .= " WHERE id ='".$id."' ";
         $sql .= " LIMIT 1";
         $result = self::$database->query($sql);
-        return $result;
+        return $sql;
 
 
       }
@@ -108,6 +109,7 @@ class Product extends DatabaseObject {
       }
 
       public function create() {
+
           return parent::create();
 
 

@@ -306,7 +306,7 @@
     
     
 <?php include(SHARED_PATH . '/public_footer.php'); ?>	
-<script src="themefiles/plugins/validation/jquery.validate-init.js"></script>
+<script src="themefiles/js/jquery.validate-init.js"></script>
 <script src="themefiles/plugins/sweetalert/js/sweetalert.min.js"></script>
     <script src="themefiles/js/sweet.js"></script>
     
@@ -319,7 +319,7 @@
 $(document).on("click", ".editProductBtn", function(event){
       clearProduct();
        var product_id =  $(this).data('id');
-        console.log(product_id);
+       
        $.ajax({
                 url: "admin/ajax.controller.php",
                 type: 'post',
@@ -328,10 +328,11 @@ $(document).on("click", ".editProductBtn", function(event){
                     product_id: product_id
                 },
                 success: function (data) {
+                    
                 var parsed_data = JSON.parse(data);
                 $('#edit-val-pid').val(parsed_data[0].id);
-                $('#edit-val-warehouse').val('1');
-                $('#edit-val-service_type').val('1');
+                $('#edit-val-warehouse').val(parsed_data[0].warehouse_id);
+                $('#edit-val-service_type').val(parsed_data[0].service_type);
                 $('#edit-val-merchant').val(parsed_data[0].merchant_info);
                 $('#edit-val-weight').val(parsed_data[0].weight);
                 $('#edit-val-lenght').val(parsed_data[0].lenght);
@@ -341,6 +342,7 @@ $(document).on("click", ".editProductBtn", function(event){
                 $('#edit-val-value').val(parsed_data[0].value);
                 $('#edit-val-status').val(parsed_data[0].status);
                 $('#edit-val-description').val(parsed_data[0].description);
+                $('#edit-val-package_type').val(parsed_data[0].package_type);
                 $('.loading_saving_product').css("display", "none");  
                 if(parsed_data[0].imagesList != ""){
                     var images = parsed_data[0].imagesList.split(','); 

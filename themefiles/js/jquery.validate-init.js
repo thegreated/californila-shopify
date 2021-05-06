@@ -19,6 +19,7 @@ jQuery(".form-valide").validate({
             "val-quantity":{required:!0,number:!0},
             "val-description":{required:!0},
             "val-status":{required:!0},
+            "val-package_type":{required:!0},
         },
 
         messages:{
@@ -32,6 +33,7 @@ jQuery(".form-valide").validate({
             "val-quantity":"Please enter only number!",
             "val-description":"Please enter a description!",
             "val-status":"Please enter a status!",
+            "val-package_type":"Please enter a package type!",
         },
 
 
@@ -66,6 +68,7 @@ jQuery(".form-valide").validate({
                     "edit-val-quantity":{required:!0,number:!0},
                     "edit-val-description":{required:!0},
                     "edit-val-status":{required:!0},
+                    "edit-val-package_type":{required:!0},
                 },
     
                 messages:{
@@ -78,7 +81,9 @@ jQuery(".form-valide").validate({
                     "edit-val-height":"Please enter a height!",
                     "edit-val-quantity":"Please enter only number!",
                     "edit-val-description":"Please enter a description!",
-                    "edit-val-status":"Please enter a status!"
+                    "edit-val-status":"Please enter a status!",
+                    "edit-val-package_type":"Please enter a Package type!",
+                    
                 },
     
     
@@ -105,7 +110,6 @@ function save_data($condition){
     }
 
     // Read selected files
-
     var totalfiles = document.getElementById(imgvalue+'uploadFile').files.length;
     if(totalfiles != 0){
         for (var index = 0; index < totalfiles; index++) {
@@ -113,6 +117,7 @@ function save_data($condition){
             form_data.append("files[]", document.getElementById(imgvalue+'uploadFile').files[index]);
         }
     }       
+
     form_data.append('customer_id',$('#'+value+'customer_id').val());
     form_data.append('warehouse',$('#'+value+'warehouse').val());
     form_data.append('service_type',$('#'+value+'service_type').val());
@@ -125,8 +130,9 @@ function save_data($condition){
     form_data.append('value',$('#'+value+'value').val());
     form_data.append('status',$('#'+value+'status').val());
     form_data.append('description',$('#'+value+'description').val());
+    form_data.append('package_type',$('#'+value+'package_type').val());
     form_data.append('condition',$condition);
-  
+    
     $.ajax({
         url: "admin/ajax.file.php",
         type: 'post',
@@ -134,6 +140,7 @@ function save_data($condition){
         contentType: false,
         processData: false,
         success: function (data) {
+            console.log(data);
             $('.success-info').append('<div class="alert alert-primary">Successfully update the product! Refresh to view the changes.</div>');
             $( ".close" ).trigger( "click" );
         },

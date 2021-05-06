@@ -55,6 +55,7 @@ if(isset($_FILES['files']['name'])){
     $args['description'] = $_POST['description'];
     $args['customer_id'] =$_POST['customer_id'];
     $args['status'] =$_POST['status'];
+    $args['package_type'] =$_POST['package_type'];
     $product = new Product($args);
     if(isset($_POST['condition']) && $_POST['condition'] == "ADD_PRODUCT" ){
         $product->create();
@@ -63,11 +64,12 @@ if(isset($_FILES['files']['name'])){
         //update count dashboard POST API
         $res = $customer->insertCustomerInformation($args['customer_id'],$countUnreadProduct);
         //update customer product POST API
-        $res = $customer->insertCustomerInformation($args);
+        
         echo $res;
     }
     if(isset($_POST['condition']) && $_POST['condition'] == "EDIT_PRODUCT" ){
         $result = $product->updateProduct($_POST['product_id']);
+        echo $result;
     }
 
 
