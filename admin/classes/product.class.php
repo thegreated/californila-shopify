@@ -97,7 +97,9 @@ class Product extends DatabaseObject {
         $sql .= " WHERE id ='".$id."' ";
         $sql .= " LIMIT 1";
         $result = self::$database->query($sql);
-        return $sql;
+        $this->id = $id;
+
+        return $this->modifyproductApi();
 
 
       }
@@ -110,9 +112,40 @@ class Product extends DatabaseObject {
 
       public function create() {
 
-          return parent::create();
+          parent::create();
+          return  $this->modifyproductApi();
 
+      }
+      
+      //rest api add product
+      public function modifyproductApi(){
+        $product = array(
+          "metafield" => array(
+            "namespace"=> "productCustomer",
+            "key" => PRODUCTID."-".$this->id,
+            "value_type"=> "json_string",
+                "value" => $this->jsonProduct()
+          )
+        );
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$this->customer_id."/metafields.json", $product, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        return $collection;
+      }
 
+      //json generator
+      public function jsonProduct(){
+      
+        $json = "{\"warehouse_id \":\"".$this->warehouse_id."\",\"service_type\":\"".$this->service_type."\",\"merchant_info\":\"".$this->merchant_info."\",\"weight\":\"".$this->weight."\",";
+        $json .= "\"lenght\":\"".$this->lenght."\",\"width\":\"".$this->width."\", \"height\":\"".$this->height."\",\"qty\":\"".$this->value."\",\"value\":\"".$this->value."\",";
+        $json .= "\"package_type\":\"".$this->package_type."\",\"status\":\"".$this->status."\",\"description\":\"".$this->description."\",";
+        
+        if($this->imagesList  == ""){
+          $json .=  "\"imagesList\":\"".$this->imagesList."\"}";
+        }else {
+          $json .= "\"imagesList\":\"".$this->imagesList."\"}";
+        }
+        return $json;
+        
       }
 
 

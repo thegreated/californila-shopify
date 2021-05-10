@@ -16,7 +16,7 @@
   define("TOKEN", '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');
   define("SHOP",  'californilacargo');
   define("CURRENTLINK", "http://$_SERVER[HTTP_HOST]/php-modified/404.htm");
-  define("PRODUCTID",  'PRODUCT-');
+  define("PRODUCTID",  'PRODUCT');
 
   // Assign the root URL to a PHP constant
   // * Do not need to include the domain

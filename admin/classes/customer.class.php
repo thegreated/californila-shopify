@@ -12,11 +12,7 @@ class Customer extends DatabaseObject {
         return $customerCollection;
 
     }
-    //insertcustomer product
-    public function insertCustomerProduct($args){
-        
 
-    }
 
     public function metafield_test(){
 

@@ -69,7 +69,7 @@ if(isset($_FILES['files']['name'])){
     }
     if(isset($_POST['condition']) && $_POST['condition'] == "EDIT_PRODUCT" ){
         $result = $product->updateProduct($_POST['product_id']);
-        echo $result;
+        echo json_encode($result);
     }
 
 
