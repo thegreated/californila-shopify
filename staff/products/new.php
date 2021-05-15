@@ -33,7 +33,7 @@
                             <div class="col-lg-6">
                                     <select class="custom-select" id="val-warehouse" name="val-warehouse">
                                     <option selected></option>
-                                        <option value="us-warehouse" >Us Warehouse</option>
+                                        <option value="us-warehouse" >US Warehouse</option>
                                         <option value="ph-warehouse" >PH Warehouse</option>
                                     </select>
                             </div>

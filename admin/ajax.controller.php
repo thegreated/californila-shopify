@@ -47,6 +47,13 @@
 			$productData = $product->find_by_productId($product_id);
 			echo json_encode($productData);
 		}
+		if(isset($_POST["method"]) && $_POST["method"] == 'SHOW_EDIT_PRODUCTS_SHOPIFY'){
+			$product_id = $_POST['product_id'];
+			$product = new Shopify();
+			$productData = $product->getProductSingle($product_id);
+			echo json_encode($productData);
+		}
+
 
 	
  

@@ -2,5 +2,5 @@
 
 
 $product = new Product();
-$data = $product->deletemetafield($_GET['customer']);
-var_dump($data);
+$data = $product->find_by_productId($_GET['id']);
+var_dump($data[0]->imagesList);

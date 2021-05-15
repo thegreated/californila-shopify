@@ -39,11 +39,14 @@
 
   require_once('classes/databaseobject.class.php');
   require_once('classes/data_table.class.php');
+  require_once('classes/shopify.class.php');
   require_once('classes/customer.class.php');
   require_once('classes/product.class.php');
   require_once('classes/announcement.class.php');
   require_once('classes/session_admin.class.php');
   require_once('classes/session.class.php');
+  require_once('classes/email.class.php');
+
   // -> All classes in directory
 
   // Autoload class definitions

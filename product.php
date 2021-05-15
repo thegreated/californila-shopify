@@ -4,8 +4,8 @@
         
         $customerId = $_GET['customer'];
         $args['id'] = $customerId;
-        $product = new Product();
-        $count = $product->product_count($customerId);
+        $product = new Shopify();
+        $count = $product->productCount($customerId);
         $args['condition'] = 'SELECT_ONE_CUSTOMER';
         $data_table = new Data_table($args);
         $customerData = $data_table->mainGenerator();
@@ -244,9 +244,11 @@
                                   <?php
                                   
                                     $args['id'] = $customerId;
-                                    $args['condition'] = 'SELECT_PRODUCT';
+                                    $args['condition'] = 'SELECT_PRODUCT_SHOPIFY';
                                     $data_table = new Data_table($args);
                                     $data = $data_table->sqlGenerator();
+                                    echo $data;
+                                 
                                       
                                   ?>
                                 </div>
@@ -324,31 +326,31 @@ $(document).on("click", ".editProductBtn", function(event){
                 url: "admin/ajax.controller.php",
                 type: 'post',
                 data: {
-                    method: 'SHOW_EDIT_PRODUCTS',
+                    method: 'SHOW_EDIT_PRODUCTS_SHOPIFY',
                     product_id: product_id
                 },
                 success: function (data) {
-                    
+                console.log(data)
                 var parsed_data = JSON.parse(data);
-                $('#edit-val-pid').val(parsed_data[0].id);
-                $('#edit-val-warehouse').val(parsed_data[0].warehouse_id);
-                $('#edit-val-service_type').val(parsed_data[0].service_type);
-                $('#edit-val-merchant').val(parsed_data[0].merchant_info);
-                $('#edit-val-weight').val(parsed_data[0].weight);
-                $('#edit-val-lenght').val(parsed_data[0].lenght);
-                $('#edit-val-width').val(parsed_data[0].width);
-                $('#edit-val-height').val(parsed_data[0].height);
-                $('#edit-val-quantity').val(parsed_data[0].qty);
-                $('#edit-val-value').val(parsed_data[0].value);
-                $('#edit-val-status').val(parsed_data[0].status);
-                $('#edit-val-description').val(parsed_data[0].description);
-                $('#edit-val-package_type').val(parsed_data[0].package_type);
+                $('#edit-val-pid').val(product_id);
+                $('#edit-val-warehouse').val(parsed_data.warehouse_id);
+                $('#edit-val-service_type').val(parsed_data.service_type);
+                $('#edit-val-merchant').val(parsed_data.merchant_info);
+                $('#edit-val-weight').val(parsed_data.weight);
+                $('#edit-val-lenght').val(parsed_data.lenght);
+                $('#edit-val-width').val(parsed_data.width);
+                $('#edit-val-height').val(parsed_data.height);
+                $('#edit-val-quantity').val(parsed_data.qty);
+                $('#edit-val-value').val(parsed_data.value);
+                $('#edit-val-status').val(parsed_data.status);
+                $('#edit-val-description').val(parsed_data.description);
+                $('#edit-val-package_type').val(parsed_data.package_type);
                 $('.loading_saving_product').css("display", "none");  
-                if(parsed_data[0].imagesList != ""){
-                    var images = parsed_data[0].imagesList.split(','); 
+                if(parsed_data.imagesList != ""){
+                    var images = parsed_data.imagesList.split(','); 
                     console.log(images)
                     for(var i = 0 ; i < images.length;i++){
-                        $('#editimage_preview').append("<img src='uploads/"+images[i]+"' height='150px'>");
+                        $('#editimage_preview').append("<img src='."+parsed_data.imagesLocation+""+images[i]+"' height='150px'>");
                     }
                 }
                 },

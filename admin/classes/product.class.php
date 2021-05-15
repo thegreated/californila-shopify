@@ -29,6 +29,7 @@ class Product extends DatabaseObject {
     public $hidden;
     public $imagesList;
     public $viewed;
+    public $imagesLocation;
 
     public function __construct($args=[]) {
          $this->id = $args['id'] ?? '';
@@ -48,105 +49,69 @@ class Product extends DatabaseObject {
          $this->imagesList = $args['imagesList'] ?? '';
          $this->viewed = $args['viewed'] ?? '0';
          $this->status = $args['status'] ?? '1';
+         $this->imagesLocation = $args['imagesLocation'] ?? '';
       
 
     }
 
-    static public function find_by_product($id) {
-        $sql = "SELECT * FROM " . static::$table_name . " ";
-        $sql .= "WHERE customer_id='" . self::$database->escape_string($id) . "' ORDER BY id DESC;";
-        $obj_array = static::find_by_sql($sql);
-        if(!empty($obj_array)) {
-          return $obj_array;
-        } else {
-          return false;
-        }
-      }
 
-      static public function find_by_productId($id) {
-        $sql = "SELECT * FROM " . static::$table_name . " ";
-        $sql .= "WHERE id='" . self::$database->escape_string($id) . "' ORDER BY id DESC;";
-        $obj_array = static::find_by_sql($sql);
-        if(!empty($obj_array)) {
-          return $obj_array;
-        } else {
-          return false;
-        }
-      }
-
-      static public function product_count($id) {
-        $sql = "SELECT sum(qty) as qty FROM " . static::$table_name . " ";
-        $sql .= "WHERE customer_id='" . self::$database->escape_string($id) . "'";
-        $obj_array = static::find_by_sql($sql);
-        return $obj_array[0]->qty;
-      }
-
-      static public function hideProduct($id,$hidden){
-        $sql ="UPDATE " . static::$table_name . " SET hidden = ".$hidden." WHERE id ='".$id."' ";
-        $sql .= " LIMIT 1";
-        $result = self::$database->query($sql);
-        return $result;
-
-      }
 
        public function updateProduct($id){
-        $sql ="UPDATE " . static::$table_name . " SET warehouse_id = '".$this->warehouse_id."' ,service_type = '".$this->service_type."'";
-        $sql .=" , merchant_info = '".$this->merchant_info."' ,weight = ".$this->weight."  ,lenght = ".$this->lenght." ,width = ".$this->width."";
-        $sql .=" ,height = ".$this->height." ,qty = ".$this->qty." ,value = ".$this->value." ,package_type = '".$this->package_type."' ,status = ".$this->status." ,description = '".$this->description."'";
-              if(!empty($this->imagesList)){ $sql .= "  ,imagesList = '".$this->imagesList."'"; }
-        $sql .= " WHERE id ='".$id."' ";
-        $sql .= " LIMIT 1";
-        $result = self::$database->query($sql);
+        $shopify = new Shopify();
         $this->id = $id;
-
-        return $this->modifyproductApi();
-
-
+        return $shopify->updateProductMetafields($id,$this->jsonProduct());
       }
-      static public function product_count_unread($id) {
-        $sql = "SELECT count(qty) as qty FROM " . static::$table_name . " ";
-        $sql .= "WHERE customer_id='" . self::$database->escape_string($id) . "' AND viewed = 0 ";
-        $obj_array = static::find_by_sql($sql);
-        return $obj_array[0]->qty;
-      }
+
+
 
       public function create() {
 
-          parent::create();
-          return  $this->modifyproductApi();
+        $shopify = new Shopify();
+        return $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id);
 
       }
       
-      //rest api add product
-      public function modifyproductApi(){
-        $product = array(
-          "metafield" => array(
-            "namespace"=> "productCustomer",
-            "key" => PRODUCTID."-".$this->id,
-            "value_type"=> "json_string",
-                "value" => $this->jsonProduct()
-          )
-        );
-        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$this->customer_id."/metafields.json", $product, 'POST');
-        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
-        return $collection;
-      }
 
       //json generator
       public function jsonProduct(){
       
-        $json = "{\"warehouse_id \":\"".$this->warehouse_id."\",\"service_type\":\"".$this->service_type."\",\"merchant_info\":\"".$this->merchant_info."\",\"weight\":\"".$this->weight."\",";
+        $json = "{\"customer_id\":\"".$this->customer_id."\",\"warehouse_id\":\"".$this->warehouse_id."\",\"service_type\":\"".$this->service_type."\",\"merchant_info\":\"".$this->merchant_info."\",\"weight\":\"".$this->weight."\",";
         $json .= "\"lenght\":\"".$this->lenght."\",\"width\":\"".$this->width."\", \"height\":\"".$this->height."\",\"qty\":\"".$this->value."\",\"value\":\"".$this->value."\",";
-        $json .= "\"package_type\":\"".$this->package_type."\",\"status\":\"".$this->status."\",\"description\":\"".$this->description."\",";
+        $json .= "\"package_type\":\"".$this->package_type."\",\"status\":\"".$this->status."\",\"description\":\"".$this->description."\"";
         
         if($this->imagesList  == ""){
-          $json .=  "\"imagesList\":\"".$this->imagesList."\"}";
+          $shopify = new Shopify();
+          $data = $shopify->getProductSingle($this->id);
+          $json .= ",\"imagesList\":\"".$data->imagesList."\",\"imagesLocation\":\"".$data->imagesLocation."\"}";
+        
         }else {
-          $json .= "\"imagesList\":\"".$this->imagesList."\"}";
+          $json .= ",\"imagesList\":\"".$this->imagesList."\",\"imagesLocation\":\"".$this->imagesLocation."\"}";
         }
         return $json;
         
       }
+
+
+      public function unitTest(){
+        $this->id = "1";
+        $this->warehouse_id ='test';
+        $this->customer_id =  'test';
+        $this->service_type = 'test';
+        $this->merchant_info =  'test';
+        $this->weight =  'test';
+        $this->width = 'test';
+        $this->lenght =  'test';
+        $this->height = 'test';
+        $this->qty =  'test';
+        $this->value =  'test';
+        $this->package_type = 'test';
+        $this->description ='test';
+        var_dump($this->create());
+        // $this->imagesList  '';
+
+      }
+
+
 
 
 

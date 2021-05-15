@@ -8,7 +8,27 @@ if(isset($_FILES['files']['name'])){
     $countfiles = count($_FILES['files']['name']);
 
     // Upload directory
-    $upload_location = "../uploads/";
+
+    //Year in YYYY format.
+    $year = date("Y");
+
+    //Month in mm format, with leading zeros.
+    $month = date("m");
+
+    //Day in dd format, with leading zeros.
+    $day = date("d");
+
+    //The folder path for our file should be YYYY/MM/DD
+    $directory = "../uploads/$year/$month/$day/";
+
+    //If the directory doesn't already exists.
+    if(!is_dir($directory)){
+        //Create our directory.
+        mkdir($directory, 755, true);
+
+    }
+    //---
+     $upload_location = $directory;
 
     // To store uploaded files path
     $files_arr = array();
@@ -42,6 +62,7 @@ if(isset($_FILES['files']['name'])){
                     
 }
     $args['imagesList'] =  implode(",", $files_arr);
+    $args['imagesLocation'] = substr($upload_location, 2);
 }
     $args['warehouse_id'] = $_POST['warehouse'];
     $args['service_type'] = $_POST['service_type'];
@@ -59,10 +80,10 @@ if(isset($_FILES['files']['name'])){
     $product = new Product($args);
     if(isset($_POST['condition']) && $_POST['condition'] == "ADD_PRODUCT" ){
         $product->create();
-        $countUnreadProduct = $product->product_count_unread($args['customer_id']);
-        $customer = new Customer();
+       // $countUnreadProduct = $product->product_count_unread($args['customer_id']);
+      //  $customer = new Customer();
         //update count dashboard POST API
-        $res = $customer->insertCustomerInformation($args['customer_id'],$countUnreadProduct);
+      //  $res = $customer->insertCustomerInformation($args['customer_id'],$countUnreadProduct);
         //update customer product POST API
         
         echo $res;
