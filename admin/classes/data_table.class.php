@@ -63,6 +63,7 @@ class Data_table extends DatabaseObject {
 
     public function mainGenerator(){
         $product = new Product();
+        $shopify = new Shopify();
          $column = [];
          $customerCollection = [];
          $data = [];
@@ -74,6 +75,7 @@ class Data_table extends DatabaseObject {
                 $column = $this->customer_table;
                 $data = $this->customer_column;
                 $customerCollection =  parent::shopify_connect($this->condition);
+
             break;
             //select all customer on customer.php
             case 'SELECT_ONE_CUSTOMER':
@@ -85,14 +87,14 @@ class Data_table extends DatabaseObject {
          $htmlreturn = '<table class="table table-striped table-bordered zero-configuration">'.$this->headerData($column,'header');
          foreach ($customerCollection as $customer){
             foreach($customer as $key => $value){
-                
+                    $id = $shopify->productCount($value['id']);
                     $htmlreturn .= '<tr>';
                     for($i = 0; $i < count($data); $i++){
                         $htmlreturn .= '<td>'.$value[$data[$i]].'</td>';                              
                     }
 
                     // static data
-                    $datas= '<td>'.$product->product_count($value['id']).'</td>';
+                    $datas= '<td>'.$id['metafield']['value'].'</td>';
                     $htmlreturn .= ($this->condition == 'SELECT_CUSTOMER') ? $datas : '' ;
                     // end test
 
@@ -106,7 +108,7 @@ class Data_table extends DatabaseObject {
         echo $htmlreturn;
     }
 
-    private function headerData($column,$conditionData){
+    public function headerData($column,$conditionData){
         
         if($conditionData == "header") { $conditionData  = 'thead'; } else { $conditionData  = 'tfoot';}
 

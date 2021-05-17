@@ -1,5 +1,6 @@
 <?php require_once('../admin/initialize.php');
 
-$myString = "test";
-$myArray = explode(',', $myString);
-print_r($myArray);
+$shopify = new Email();
+
+$shopify->addProductSendEmail('5269273411751');
+

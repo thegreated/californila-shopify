@@ -93,6 +93,8 @@ class Shopify extends DatabaseObject{
         
          }
     }
+
+
     
 
     //json to array 
@@ -128,8 +130,30 @@ class Shopify extends DatabaseObject{
                if($val['namespace'] == "customerProducts")
                    $i++;
             }
-           return $i;
+        
        }
+        $data = array('metafield' => 
+        array(
+                    'key' => 'product_count_unread',
+                    'value' => $i,
+                    'value_type' => 'string',               
+                    'namespace' => 'product_unread'
+                )
+        );
+        $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        return  $collection;
 
     }
+    
+
+    //customer api -----------------------------------------
+    public function getCustomerData($customerid){
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid.".json", array(), 'GET');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        return $collection;
+
+    }
+
+    
 }

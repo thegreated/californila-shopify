@@ -206,7 +206,7 @@
                                     <div class="col">
                                         <div class="card card-profile text-center">
                                             <span class="mb-1 text-primary"><i class="icon-social-dropbox"></i></span>
-                                            <h3 class="mb-0"><?=$count ?></h3>
+                                            <h3 class="mb-0"><?=$count['metafield']['value']?></h3>
                                             <p class="text-muted px-4">Warehouse</p>
                                         </div>
                                     </div>
