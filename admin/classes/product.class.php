@@ -59,15 +59,19 @@ class Product extends DatabaseObject {
        public function updateProduct($id){
         $shopify = new Shopify();
         $this->id = $id;
-        return $shopify->updateProductMetafields($id,$this->jsonProduct());
+        $email = new Email();
+        $shopify->updateProductMetafields($id,$this->jsonProduct());
+        $sendEmail = $email->addProductSendEmail($this->customer_id);
       }
 
 
 
       public function create() {
 
-        $shopify = new Shopify();
-        return $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id);
+       $shopify = new Shopify();
+       $email = new Email();
+       $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id);
+       $sendEmail = $email->addProductSendEmail($this->customer_id);
 
       }
       
@@ -76,7 +80,7 @@ class Product extends DatabaseObject {
       public function jsonProduct(){
       
         $json = "{\"customer_id\":\"".$this->customer_id."\",\"warehouse_id\":\"".$this->warehouse_id."\",\"service_type\":\"".$this->service_type."\",\"merchant_info\":\"".$this->merchant_info."\",\"weight\":\"".$this->weight."\",";
-        $json .= "\"lenght\":\"".$this->lenght."\",\"width\":\"".$this->width."\", \"height\":\"".$this->height."\",\"qty\":\"".$this->value."\",\"value\":\"".$this->value."\",";
+        $json .= "\"lenght\":\"".$this->lenght."\",\"width\":\"".$this->width."\", \"height\":\"".$this->height."\",\"qty\":\"".$this->qty."\",\"value\":\"".$this->value."\",";
         $json .= "\"package_type\":\"".$this->package_type."\",\"status\":\"".$this->status."\",\"description\":\"".$this->description."\"";
         
         if($this->imagesList  == ""){
