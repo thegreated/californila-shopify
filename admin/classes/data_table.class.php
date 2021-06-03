@@ -29,7 +29,7 @@ class Data_table extends DatabaseObject {
                 $column  = $product->product_table;
                 $htmlreturn = '<table class="table table-striped table-bordered zero-configuration">'.$this->headerData($column,'header');
                 foreach($products  as $product){
-                    $htmlreturn .=  '<tr style="background:#C2C2C2">';
+                    $htmlreturn .=  '<tr>';
                     $htmlreturn .= '<td>';
                     //image multiple
                         $imgLines = explode(',', $product['imagesList']);

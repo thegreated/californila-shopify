@@ -13,9 +13,10 @@
   define("IMG_PATH", PROJECT_PATH . '/themefiles/img/products/main/pic/');
   define("IMG_PATH_THUMB", PROJECT_PATH . '/themefiles/img/products/thumb/pic/');
   define("ADMIN_SHARED", PROJECT_PATH . '/controller/shared/');
-  define("TOKEN", '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');
+  define("TOKEN", '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');
   define("SHOP",  'californilacargo');
   define("CURRENTLINK", "http://$_SERVER[HTTP_HOST]/php-modified/404.htm");
+  define("LINK",'https://californila.com/apps/californila-cargo/');
   define("PRODUCTID",  'PRODUCT');
 
   // Assign the root URL to a PHP constant

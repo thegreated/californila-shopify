@@ -1,0 +1,21 @@
+<pre>
+This is the proxy page for {{ shop.name }}.
+{{ shop.name }} has {{ shop.products_count }} {{ shop.products_count | pluralize: 'product', 'products' }}.
+List of products in the store:
+{% for product in collections['all'].products %} - {{ product.title }}<br>{% endfor %}
+</pre>
+
+
+         
+<!--                <a href="https://www.facebook.com/californila" class="site-nav__link text-dark " data-meganav-type="child" tabindex="" target="_blank">
+                         <i class="fa fa-facebook-official" aria-hidden="true"></i>
+
+                      </a>
+               <a href="https://twitter.com/californila" class="site-nav__link text-dark pl-0 pr-0" data-meganav-type="child" tabindex="" target="_blank">
+                       <i class="fa fa-twitter" aria-hidden="true"></i>
+
+                      </a>
+               <a href="https://www.instagram.com/californila/" class="site-nav__link text-dark" data-meganav-type="child" tabindex="" target="_blank">
+                       <i class="fa fa-instagram" aria-hidden="true"></i>
+
+                      </a> -->

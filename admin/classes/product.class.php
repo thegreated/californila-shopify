@@ -60,7 +60,7 @@ class Product extends DatabaseObject {
         $shopify = new Shopify();
         $this->id = $id;
         $email = new Email();
-        $shopify->updateProductMetafields($id,$this->jsonProduct());
+        $shopify->updateProductMetafields($id,$this->jsonProduct(),$this->customer_id);
         $sendEmail = $email->addProductSendEmail($this->customer_id);
       }
 

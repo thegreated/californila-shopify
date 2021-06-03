@@ -28,12 +28,12 @@ class Shopify extends DatabaseObject{
         $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products/".$productShopId."/metafields.json", $data, 'POST');
         $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
         $this->addMetafieldCustomer($productShopId,$customerid);
-
+        $this->notificationHead($customerid);
     
         return  $productShopId;
     }
     //update metafields
-    public function updateProductMetafields($productShopId,$arrayData){
+    public function updateProductMetafields($productShopId,$arrayData,$customerid){
 
         $data = array(
             'metafield'=>array( 
@@ -47,6 +47,7 @@ class Shopify extends DatabaseObject{
         //update product shopify
         $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products/".$productShopId."/metafields.json", $data, 'POST');
         $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        $this->notificationHead($customerid);
         
 
     }
@@ -62,6 +63,22 @@ class Shopify extends DatabaseObject{
             )
           );
           $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $product, 'POST');
+          $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+          return $collection;
+
+    }
+
+    private function notificationHead($customerid){
+
+        $data = array(
+            'metafield' => array(
+            'key' => 'product_notification_header',
+            'value' => TRUE,
+            'value_type' => 'boolean',               
+            'namespace' => 'product_dashboard'
+        )
+        );
+          $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
           $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
           return $collection;
 
@@ -120,7 +137,7 @@ class Shopify extends DatabaseObject{
 
     }
 
-    //dashboartd
+    //dashboard admin
     public function productCount($customerid){
         $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", array(), 'GET');
         $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
@@ -134,14 +151,29 @@ class Shopify extends DatabaseObject{
        }
         $data = array('metafield' => 
         array(
-                    'key' => 'product_count_unread',
-                    'value' => $i,
-                    'value_type' => 'string',               
-                    'namespace' => 'product_unread'
-                )
+            'key' => 'product_count_warehouse',
+            'value' => $i,
+            'value_type' => 'string',               
+            'namespace' => 'product_dashboard'
+        )
         );
+ 
         $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
         $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'product_count_packed',
+            'value' => $i,
+            'value_type' => 'string',               
+            'namespace' => 'product_dashboard'
+        )
+        );
+
+        $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+
         return  $collection;
 
     }
