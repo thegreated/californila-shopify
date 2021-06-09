@@ -70,12 +70,78 @@ class Product extends DatabaseObject {
 
        $shopify = new Shopify();
        $email = new Email();
-       $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id);
-       $sendEmail = $email->addProductSendEmail($this->customer_id);
+       $variant = $this->product_calculate();
+      $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id,$this->merchant_info,$this->package_type,$variant,$this->qty);
+      $sendEmail = $email->addProductSendEmail($this->customer_id);
+       return  $variant;
 
       }
       
+      public function product_calculate(){
+        $subtotal_air = 0;
+        $subtotal_sea = 0;
+        $dollar_prize = 47.65;
+        $subtotal = 0;
+        $lbs = 0;
+        $lbsunroubd = (float) $this->weight;
+       if($lbsunroubd > 1){
+             //check if decimal
+           if ($this->is_decimal($lbsunroubd)) {
+            //check if less that .4
+               if(($lbsunroubd % 1) < 0.5){
+                    $lbs = $lbsunroubd;
+               }else{
+                  $lbs = round($lbsunroubd);
+               }
+           }else{
+           
+             $lbs = $lbsunroubd;
+           }
+           
+         }else{
+           $lbs = 1;
+        }
 
+        $weight = $lbs;
+   			
+        $length_inches = (float) $this->lenght;
+        $width_inches = (float) $this->width;
+        $height_inches = (float) $this->height;
+  
+        $length = $length_inches;
+        $width = $width_inches;
+        $height = $height_inches;
+
+        $declared_value = $this->value;
+        $dimensional_weight = (($length * $width * $height ) / 166);
+        $dimensional_weight = number_format( (float) $dimensional_weight, 2, '.', '');
+        $air_cargo = $weight * 7.99;
+        $sea_cargo = $dimensional_weight * 2.75;
+        $air_cargo_dw = $dimensional_weight * 7.99;
+        $sea_cargo_dw = $dimensional_weight * 2.75;
+        if($weight > $dimensional_weight){
+          $subtotal_air = $air_cargo + $special_handling;
+          $subtotal_sea = $sea_cargo + $special_handling;
+        }
+        else if($weight < $dimensional_weight){
+          $subtotal_air = $air_cargo_dw + $special_handling ; 
+          $subtotal_sea = $sea_cargo_dw + $special_handling;
+         }
+         $sea=  (float) $subtotal_sea * $dollar_prize;
+         $air =  (float) $subtotal_air *  $dollar_prize;
+         
+         $args['sea'] = number_format( (float) $sea, 2, '.', '');
+         $args['air'] = number_format( (float) $air, 2, '.', '');
+
+         return $args;
+       
+
+      }
+
+     private function is_decimal( $val )
+      {
+          return is_numeric( $val ) && floor( $val ) != $val;
+      }
       //json generator
       public function jsonProduct(){
       
@@ -102,12 +168,12 @@ class Product extends DatabaseObject {
         $this->customer_id =  'test';
         $this->service_type = 'test';
         $this->merchant_info =  'test';
-        $this->weight =  'test';
-        $this->width = 'test';
-        $this->lenght =  'test';
-        $this->height = 'test';
-        $this->qty =  'test';
-        $this->value =  'test';
+        $this->weight =  '50.5';
+        $this->width = '17';
+        $this->lenght =  '20';
+        $this->height = '23';
+        $this->qty =  '1';
+        $this->value =  '500';
         $this->package_type = 'test';
         $this->description ='test';
         var_dump($this->create());

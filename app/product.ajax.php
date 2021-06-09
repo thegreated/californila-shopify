@@ -1,6 +1,6 @@
 <?php require_once('../admin/initialize.php');
 
-$shopify = new Email();
+$shopify = new Product();
 
-$shopify->addProductSendEmail('5269273411751');
+$shopify->unitTest();
 

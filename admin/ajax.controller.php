@@ -39,7 +39,7 @@
 		if(isset($_POST["method"]) && $_POST["method"] == 'UNHIDE_PRODUCTS'){
 			$product_id = $_POST['product_id'];
 			$product = new Product();
-			$product->hideProduct($product_id,0);
+			$product->	($product_id,0);
 		}
 		if(isset($_POST["method"]) && $_POST["method"] == 'SHOW_EDIT_PRODUCTS'){
 			$product_id = $_POST['product_id'];

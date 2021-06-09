@@ -4,26 +4,54 @@ class Shopify extends DatabaseObject{
 
  
 
-    public function productAdd($title,$arrayData,$customerid){
-        $product = [
-            "product" => [
-              "title"=> $title
-            ]
-        ];
+    public function productAdd($title,$arrayData,$customerid,$merchant_info,$package_type,$variants,$qty){
+        $product = array(
+            "product" => array(
+              "title"=> $title,
+              "vendor"=> $merchant_info,
+              "product_type" => $package_type
+            )
+            );
         //add product shopify
         $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products.json", $product, 'POST');
         $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        
         //add metafield to product
         $productShopId =  $collection['product']['id'];
-            $data = array(
-                'metafield'=>array( 
-                    "namespace"=> "productData",
-                    "key" => $productShopId,
-                    "value_type"=> "json_string",
-                        "value" => $arrayData
+        //adding variant
+        $variant = array(
+            "variant" => array(
+              "option1"=> 'air-cargo',
+              "price" => $variants['air'],
+              "inventory_policy" => "continue"
+            
+            )
+        );
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products/".$productShopId."/variants.json", $variant, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
 
-                )
-            );
+        $variant = array(
+            "variant" => array(
+              "option1"=> 'sea-cargo',
+              "price" => $variants['sea'],
+              "inventory_policy" => "continue"
+
+             
+            )
+        );
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products/".$productShopId."/variants.json", $variant, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+
+        $data = array(
+            'metafield'=>array( 
+                "namespace"=> "productData",
+                "key" => $productShopId,
+                "value_type"=> "json_string",
+                    "value" => $arrayData
+
+            )
+        );
         //add metafield to product
         $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products/".$productShopId."/metafields.json", $data, 'POST');
         $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
@@ -187,5 +215,85 @@ class Shopify extends DatabaseObject{
 
     }
 
-    
+     //updttecustomerProfile-----------------------------------------
+     public function updateCustomerProfile($customerid,$first_name,$last_name,$gender,$facebook,$instagram,$birthday,$phone,$email){
+
+        $data = array('customer' => 
+        array(
+            'id' => $customerid,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'phone' => $phone,
+             
+        )
+        );
+
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid.".json",$data, 'PUT');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'birthday',
+            'value' => $birthday,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        
+        $data = array('metafield' => 
+        array(
+            'key' => 'gender',
+            'value' => $gender,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'facebook',
+            'value' => $facebook,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'instagram',
+            'value' => $instagram,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $collection = $this->shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+
+     }
+
+
+     public function updateEmail($customerid,$email){
+
+        
+        $data = array('customer' => 
+        array(
+            'id' => $customerid,
+            'email' => $email,
+        )
+        );
+
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$customerid.".json",$data, 'PUT');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+     }
+     public function updatePassword($customerid,$email){
+
+    }
 }
