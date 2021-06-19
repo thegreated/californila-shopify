@@ -1,6 +1,11 @@
 <?php require_once('../admin/initialize.php');
 
-$shopify = new Product();
+$shopify = new Shopify();
 
-$shopify->unitTest();
+$product = new Product();
+$product->unitTest();
+$test = $product->updateProduct('6831442657447');
+var_dump($test);
+
+
 

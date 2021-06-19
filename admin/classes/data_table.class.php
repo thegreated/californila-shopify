@@ -26,9 +26,13 @@ class Data_table extends DatabaseObject {
                 $shopify = new Shopify();
                 $product = new Product();
                 $products = $shopify->getProductList($this->id);
+               
                 $column  = $product->product_table;
+                
                 $htmlreturn = '<table class="table table-striped table-bordered zero-configuration">'.$this->headerData($column,'header');
+                $htmlreturn .=  $this->id;
                 foreach($products  as $product){
+                 
                     $htmlreturn .=  '<tr>';
                     $htmlreturn .= '<td>';
                     //image multiple
@@ -52,7 +56,7 @@ class Data_table extends DatabaseObject {
                 $htmlreturn .= $this->headerData($column,'').'</table>';
                 return $htmlreturn;
 
-            break;
+            break; 
             default :
         }
 

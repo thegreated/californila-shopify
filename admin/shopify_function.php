@@ -1,7 +1,7 @@
 <?php
 
 
- function shopify_call($token, $shop, $api_endpoint, $query = array(), $method = 'GET', $request_headers = array()) {
+ function shopify_call($token = "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", $shop, $api_endpoint, $query = array(), $method = 'GET', $request_headers = array()) {
     
     // Build URL
     $url = "https://" . $shop . ".myshopify.com" . $api_endpoint;

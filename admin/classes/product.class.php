@@ -31,53 +31,74 @@ class Product extends DatabaseObject {
     public $viewed;
     public $imagesLocation;
 
-    public function __construct($args=[]) {
-         $this->id = $args['id'] ?? '';
-         $this->warehouse_id = $args['warehouse_id'] ?? '';
-         $this->customer_id = $args['customer_id'] ?? '';
-         $this->service_type = $args['service_type'] ?? '';
-         $this->merchant_info = $args['merchant'] ?? '';
-         $this->weight = $args['weight'] ?? '';
-         $this->width = $args['width'] ?? '';
-         $this->lenght = $args['lenght'] ?? '';
-         $this->height = $args['height'] ?? '';
-         $this->qty = $args['quantity'] ?? '';
-         $this->value = $args['value'] ?? '';
-         $this->package_type = $args['package_type'] ?? '';
-         $this->description = $args['description'] ?? '';
-         $this->hidden = $args['hidden'] ?? '0';
-         $this->imagesList = $args['imagesList'] ?? '';
-         $this->viewed = $args['viewed'] ?? '0';
-         $this->status = $args['status'] ?? '1';
-         $this->imagesLocation = $args['imagesLocation'] ?? '';
-      
+      public function __construct($args=[]) {
+          $this->id = $args['id'] ?? '';
+          $this->warehouse_id = $args['warehouse_id'] ?? '';
+          $this->customer_id = $args['customer_id'] ?? '';
+          $this->service_type = $args['service_type'] ?? '';
+          $this->merchant_info = $args['merchant'] ?? '';
+          $this->weight = $args['weight'] ?? '';
+          $this->width = $args['width'] ?? '';
+          $this->lenght = $args['lenght'] ?? '';
+          $this->height = $args['height'] ?? '';
+          $this->qty = $args['quantity'] ?? '';
+          $this->value = $args['value'] ?? '';
+          $this->package_type = $args['package_type'] ?? '';
+          $this->description = $args['description'] ?? '';
+          $this->hidden = $args['hidden'] ?? '0';
+          $this->imagesList = $args['imagesList'] ?? '';
+          $this->viewed = $args['viewed'] ?? '0';
+          $this->status = $args['status'] ?? '1';
+          $this->imagesLocation = $args['imagesLocation'] ?? '';
+        
 
-    }
-
-
-
+      }
        public function updateProduct($id){
         $shopify = new Shopify();
         $this->id = $id;
         $email = new Email();
-        $shopify->updateProductMetafields($id,$this->jsonProduct(),$this->customer_id);
-        $sendEmail = $email->addProductSendEmail($this->customer_id);
+        $shopify->updateProductMetafields($id,$this->jsonProduct(),$this->customer_id,$this->warehouse_id,$this->status);
+        if($this->status == "3" && $this->warehouse_id == "ph-warehouse"){
+          $cargo = $shopify->getCargoStatus($id);
+         return   var_dump($this->calculate_product_cost($cargo,$id));
+        }
+      //  $sendEmail = $email->addProductSendEmail($this->customer_id);
+     
+
       }
-
-
-
+      //create producy
       public function create() {
 
        $shopify = new Shopify();
        $email = new Email();
-       $variant = $this->product_calculate();
-      $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id,$this->merchant_info,$this->package_type,$variant,$this->qty);
-      $sendEmail = $email->addProductSendEmail($this->customer_id);
-       return  $variant;
+
+        $test = $shopify->productAdd($this->description,$this->jsonProduct(),$this->customer_id,$this->merchant_info,$this->package_type);
+       //$sendEmail = $email->addProductSendEmail($this->customer_id);
+       return $this->description.' '.$this->jsonProduct().' '.$this->customer_id.' '.$this->merchant_info.' '.$this->package_type;
+    
 
       }
-      
-      public function product_calculate(){
+      //add product price to  metafields
+      private function calculate_product_cost($cargo,$productShopId){
+         $price =  $this->product_calculate($cargo);
+       
+          // //adding variant
+          $variant = array(
+              "variant" => array(
+                "option1"=> "cargo-price",
+                "price" =>  $price, 
+                "inventory_policy" => "continue",
+  
+              )
+          );
+          $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/products/".$productShopId."/variants.json", $variant, 'POST');
+          $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+          return $collection;
+          
+          
+      }
+      //calculate product
+      public function product_calculate($cargo){
         $subtotal_air = 0;
         $subtotal_sea = 0;
         $dollar_prize = 47.65;
@@ -129,17 +150,23 @@ class Product extends DatabaseObject {
          }
          $sea=  (float) $subtotal_sea * $dollar_prize;
          $air =  (float) $subtotal_air *  $dollar_prize;
-         
-         $args['sea'] = number_format( (float) $sea, 2, '.', '');
-         $args['air'] = number_format( (float) $air, 2, '.', '');
-
-         return $args;
+         switch($cargo){
+          case 'sea-cargo':
+            return number_format( (float) $sea, 2, '.', '');
+          break;
+          case 'air-cargo':
+            return  number_format( (float) $air, 2, '.', '');
+          break;
+          default:
+            return number_format( (float) $sea, 2, '.', '');
+          break;
+         }
+       
        
 
       }
 
-     private function is_decimal( $val )
-      {
+     private function is_decimal( $val ) {
           return is_numeric( $val ) && floor( $val ) != $val;
       }
       //json generator
@@ -163,23 +190,25 @@ class Product extends DatabaseObject {
 
 
       public function unitTest(){
-        $this->id = "1";
-        $this->warehouse_id ='test';
-        $this->customer_id =  'test';
-        $this->service_type = 'test';
-        $this->merchant_info =  'test';
+        $this->id = "6831381053607";
+        $this->warehouse_id ='ph-warehouse';
+        $this->customer_id =  '5368252367015  ';
+        $this->service_type = 'personal-shopper';
+        $this->merchant_info =  'AMAZON';
         $this->weight =  '50.5';
         $this->width = '17';
         $this->lenght =  '20';
         $this->height = '23';
         $this->qty =  '1';
         $this->value =  '500';
-        $this->package_type = 'test';
-        $this->description ='test';
-        var_dump($this->create());
+        $this->package_type = 'normal';
+        $this->description ='controller';
+        $this->status ='3';
+     
         // $this->imagesList  '';
 
       }
+      
 
 
 

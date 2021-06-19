@@ -1,5 +1,6 @@
  <script src="themefiles/plugins/common/common.min.js"></script>
 
+ 
 
     <script src="themefiles/js/custom.min.js"></script>
     <script src="themefiles/js/settings.js"></script>

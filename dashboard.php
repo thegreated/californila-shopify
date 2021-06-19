@@ -26,7 +26,28 @@ if(isset($_POST["method"])){
 
         break;
         case('CHANGE_PROFILE_IMG'):
-           
+        
+        break;
+        case('SAVE_REQUEST'):
+            $product_request_name = $_POST['product_request_name'];
+            $product_link = $_POST['product_link'];
+            $instruction = $_POST['instruction'];
+            $customer = new Customer();
+            echo $product_request_name.' '.$product_link.' '.$instruction.' '.$productShopId.' '.$user_id;
+            $result = $customer->requestInsert($product_request_name,$product_link,$instruction,$user_id);
+         
+            echo $result;
+
+
+        break;
+
+
+        case('PENDING_USA_PACKAGE'):
+            $arrayProductId =  $_POST['productId'];
+            $shipment =  $_POST['shipment'];
+            $shopify = new Shopify();
+            $result = $shopify->product_pending_to_u_s($arrayProductId,$user_id,$shipment);
+            echo json_encode($result);
         break;
         
     }

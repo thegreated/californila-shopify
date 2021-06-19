@@ -23,8 +23,7 @@
 			$product = new Product($args);
 			$uploadfile = $_FILES['file']['name'];
 
-			return $uploadfile;
-			//$sql = $product->create();
+			$sql = $product->create();
 
 			
 
@@ -48,6 +47,7 @@
 			echo json_encode($productData);
 		}
 		if(isset($_POST["method"]) && $_POST["method"] == 'SHOW_EDIT_PRODUCTS_SHOPIFY'){
+			
 			$product_id = $_POST['product_id'];
 			$product = new Shopify();
 			$productData = $product->getProductSingle($product_id);

@@ -31,8 +31,51 @@ class Customer extends DatabaseObject {
         
     }
  
-    public function metafield_test(){
+    
+    public function requestInsert($product_request_name,$product_link,$instruction,$productShopId){
 
+        $data = array(
+            'metafield'=>array( 
+                "namespace"=> "product_request",
+                "key" => "product_request_name",
+                "value_type"=> "string",
+                "value" =>  $product_request_name
+
+            )
+        );
+        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$productShopId."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+ 
+        $data = array(
+            'metafield'=>array( 
+                "namespace"=> "product_request",
+                "key" => "product_link",
+                "value_type"=> "string",
+                "value" =>  $product_link
+
+            )
+        );
+        $collection = parent::shopify_call( TOKEN, SHOP,"/admin/api/2021-04/customers/".$productShopId."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        $data = array(
+            'metafield'=>array( 
+                "namespace"=> "product_request",
+                "key" => "instruction",
+                "value_type"=> "string",
+                "value" =>  $instruction
+
+            )
+        );
+        $collection = parent::shopify_call(TOKEN, SHOP,"/admin/api/2021-04/customers/".$productShopId."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        return $collection;
+
+
+
+        
+
+    
+      
     }
 
 }

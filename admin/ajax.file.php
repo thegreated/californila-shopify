@@ -6,26 +6,19 @@ require_once('initialize.php');
 $args[] = [];
 if(isset($_FILES['files']['name'])){
     $countfiles = count($_FILES['files']['name']);
-
     // Upload directory
-
     //Year in YYYY format.
     $year = date("Y");
-
     //Month in mm format, with leading zeros.
     $month = date("m");
-
     //Day in dd format, with leading zeros.
     $day = date("d");
-
     //The folder path for our file should be YYYY/MM/DD
     $directory = "../uploads/$year/$month/$day/";
-
     //If the directory doesn't already exists.
     if(!is_dir($directory)){
         //Create our directory.
         mkdir($directory, 755, true);
-
     }
     //---
      $upload_location = $directory;

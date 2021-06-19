@@ -246,6 +246,7 @@
                                     $args['id'] = $customerId;
                                     $args['condition'] = 'SELECT_PRODUCT_SHOPIFY';
                                     $data_table = new Data_table($args);
+                     
                                     $data = $data_table->sqlGenerator();
                                     echo $data;
                                  
@@ -321,7 +322,7 @@
 $(document).on("click", ".editProductBtn", function(event){
       clearProduct();
        var product_id =  $(this).data('id');
-       
+  
        $.ajax({
                 url: "admin/ajax.controller.php",
                 type: 'post',
