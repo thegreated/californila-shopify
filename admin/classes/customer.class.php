@@ -3,34 +3,6 @@
 
 class Customer extends DatabaseObject {
 
-   
-    private $customer_table = ['First Name','Last Name','Email','Number Product','Modify'];
-    private $customer_column = ['first_name','last_name','email'];
-
-    public $first_name; 
-    public $last_name; 
-    public $gender;
-    public $facebook;
-    public $instagram; 
-    public $birthday; 
-
-    public function __construct($args=[]) {
-        $this->id = $args['id'] ?? '';
-        $this->first_name = $args['first_name'] ?? '';
-        $this->last_name = $args['last_name'] ?? '';
-        $this->gender = $args['gender'] ?? '';
-        $this->facebook = $args['facebook'] ?? '';
-        $this->instagram = $args['instagram'] ?? '';
-        $this->birthday = $args['birthday'] ?? '';
-
-    }
-    public function insertCustomerInformation($id,$data){
-        //insert to shopoify count product
-        $customerCollection =  parent::shopify_connect('CUSTOMER_DASHBOARD_PRODUCT_COUNT',$id,$data);
-        return $customerCollection;
-        
-    }
- 
     
     public function requestInsert($product_request_name,$product_link,$instruction,$productShopId){
 
@@ -43,8 +15,7 @@ class Customer extends DatabaseObject {
 
             )
         );
-        $collection = parent::shopify_call(TOKEN, SHOP, "/admin/api/2021-04/customers/".$productShopId."/metafields.json", $data, 'POST');
-        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        $this->callShortcut($productShopId,$data);
  
         $data = array(
             'metafield'=>array( 
@@ -55,8 +26,7 @@ class Customer extends DatabaseObject {
 
             )
         );
-        $collection = parent::shopify_call( TOKEN, SHOP,"/admin/api/2021-04/customers/".$productShopId."/metafields.json", $data, 'POST');
-        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        $this->callShortcut($productShopId,$data);
         $data = array(
             'metafield'=>array( 
                 "namespace"=> "product_request",
@@ -66,16 +36,78 @@ class Customer extends DatabaseObject {
 
             )
         );
-        $collection = parent::shopify_call(TOKEN, SHOP,"/admin/api/2021-04/customers/".$productShopId."/metafields.json", $data, 'POST');
-        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
-        return $collection;
-
-
-
-        
-
+        $this->callShortcut($productShopId,$data);
     
+
       
     }
+
+      //updttecustomerProfile-----------------------------------------
+    public function updateCustomerProfile($customerid,$first_name,$last_name,$gender,$facebook,$instagram,$birthday,$phone,$email){
+
+        $data = array('customer' => 
+        array(
+            'id' => $customerid,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'phone' => $phone,
+             
+        )
+        );
+
+        $collection = parent::shopify_call("/admin/api/2021-04/customers/".$customerid.".json",$data, 'PUT');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'birthday',
+            'value' => $birthday,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $this->callShortcut($customerid,$data);
+       
+      
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'gender',
+            'value' => $gender,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $this->callShortcut($customerid,$data);
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'facebook',
+            'value' => $facebook,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $this->callShortcut($customerid,$data);
+
+        $data = array('metafield' => 
+        array(
+            'key' => 'instagram',
+            'value' => $instagram,
+            'value_type' => 'string',               
+            'namespace' => 'customer_profile'
+        )
+        );
+        $this->callShortcut($customerid,$data);
+        
+
+    }
+
+     private function callShortcut($customerid,$data){
+        $collection = parent::shopify_call( "/admin/api/2021-04/customers/".$customerid."/metafields.json", $data, 'POST');
+        $collection = json_decode($collection['response'], JSON_PRETTY_PRINT);
+        return $collection;
+     }
 
 }
